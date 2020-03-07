@@ -33,14 +33,17 @@ void BSP_Init(void)
     Bsp_UartInit();
 	Bsp_AdcInit();
 	SPI1_Init(SPI0_BAUDRATE_1);
+	SPI3_Init(SPI0_BAUDRATE_1);
 	SysClock_Init();
 	
     MT25QL128_Init();
 	STM32_Tim_PWM_Init();
 	//Stm32_Can_Init();
 	//STM32_Exti_Init();
-	S8377_init();
-    LTC2355Init();
+	//S8377_init();
+    //LTC2355Init();
+    AD4004Init();
+    S10121_init();
 	DAC121S101_Init();
 #if 0
 	  USBD_Init(&USB_OTG_dev,

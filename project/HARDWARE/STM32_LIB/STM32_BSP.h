@@ -22,7 +22,9 @@
 
 #include "DAC121.h"
 #include "Drv_LTC2355.h"
-#include "Drv_S8377.h"
+//#include "Drv_S8377.h"
+#include "Drv_AD4004.h"
+#include "Drv_S10121.h"
 #include "Drv_MT25QL128.h" 
 
 //------------------------------------------”√ªß≈‰÷√------------------------------------------------

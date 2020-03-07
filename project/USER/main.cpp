@@ -9,7 +9,7 @@ extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
 extern uint8_t UsbHidReceiveComplete ;
 extern INT16U uin_CountSec; 
   
-INT16U uin_buff[256];// = {2,45,456,6789,64564};
+INT16U uin_buff[512];// = {2,45,456,6789,64564};
 #define FLASH_SAVE_ADDR  500
 INT8U uch_buff[15];
 
@@ -42,42 +42,34 @@ int main(void)
 	SetDA_Voltage(1.0);  
 	SetPWM_Duty(PWM_CHL1,70);
 //	MT25QL128_Erase_Chip();
-    LED1_ON();
+   // LED1_ON();
+    LED1_OFF();
+	LED2_OFF();
+    LED3_OFF();
 	while(1)
 	{
 	 //   Comm_Protocal_Precess();
-
+//flag=AD4004_ReadRegister();
 		WDI_TOGGLE();
- //       USART6_Puts(strings,sizeof (strings));
- //       DelayNms(500);
-      
-//		f_Temp = GetAdcVol(FBHV_CHANNEL);
-//		USART3_Puts(strings,sizeof (strings));
-	//	LTC2355_ReadInt16u_One(data);
-	//	LTC2355_ReadFp32(10,f_Temp);
+#if 0	
 		if (UsbHidReceiveComplete)
 		{
-		USBD_HID_SendReport (&USB_OTG_dev, 
-							   strings,
-							   64);
-		UsbHidReceiveComplete = 0;
-	    } 
+		  USBD_HID_SendReport (&USB_OTG_dev, 
+								 strings,
+								 64);
+		  UsbHidReceiveComplete = 0;
+		  } 
+#endif		
+		
+		
+#if 1		
 		if(uin_CountSec > gst_SysPara.uin_TimeInt) 
         {
-		    LED2_TOGGLE();
+		//    LED2_TOGGLE();
             uin_CountSec = 0;
-            S8377_ImageCapture((INT16U*)uin_buff);  
-	        
-#if 0
-			for(i=0; i<256; i++)
-			{
-			    uin_buff[i] = i *2 +1;
-			}  
-#endif			
-			  
-			  
+            S10121_ImageCapture((INT16U*)uin_buff);    
 	        SendImageData(uin_buff);
-        }		
-	//	printf("hello world");
+        }	
+#endif
 	}  
 }

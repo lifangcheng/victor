@@ -23,8 +23,8 @@ extern INT8U SPI1_Write(INT8U byte);
 extern INT8U SPI1_Read(void);
 
 
-extern BOOL SPI2_Init(INT8U uch_Baudrate,INT8U uch_Polar,INT8U uch_Phase);
-extern INT8U SPI2_Write(INT8U byte);
+extern BOOL SPI3_Init(INT8U uch_Baudrate);
+extern INT8U SPI3_Write(INT8U byte);
 extern void  STM32SPI2_SndData16(INT16U send);
 
 extern INT8U SPI3_Read(void);

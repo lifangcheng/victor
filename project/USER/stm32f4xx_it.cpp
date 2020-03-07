@@ -167,7 +167,7 @@ void SysTick_Handler(void)//10ms
 		uin_HalfSec = 0;
 		gb_test = TRUE;
 		gb_Run = TRUE;
-        LED3_TOGGLE();    
+   //     LED3_TOGGLE();    
 	}
 }
 

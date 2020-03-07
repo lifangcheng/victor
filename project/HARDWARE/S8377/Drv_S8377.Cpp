@@ -5,6 +5,7 @@
 #include "Drv_S8377.h"
 #include "STM32_BSP.h"
 
+#ifdef S8377
 //uint8_t Pixel[138];
 /*************************************************************************
 *  函数名称：CCD_init
@@ -386,7 +387,6 @@ void SendImageData(INT16U * ImageData) {
 //	  USART6_Puts((u8 *)" ",1);
 	 
      // SendHex(*ImageData++);
-	  
 
 //	    memset(uin_buff,0,sizeof (uin_buff));
     }
@@ -444,3 +444,4 @@ void GetCenter(INT8U * ImageData)       //可以放在中断中
       S8377_erzhihua(256,ImageData);         
       S8377_vImageCalculate(ImageData);        //滤波
 }
+#endif
