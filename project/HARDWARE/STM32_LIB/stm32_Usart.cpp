@@ -45,45 +45,6 @@ void Bsp_UartInit(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
   	USART_InitTypeDef USART_InitStructure;
 	USART_ClockInitTypeDef USART_ClockInitStruct;
-
-	//----------USART2 config -----//
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-  	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE); 
-  	
-  	GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);  
-  	GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
-	
-	GPIO_StructInit(&GPIO_InitStructure);
-  	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-  	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  	//GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  	//GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  	GPIO_Init(GPIOA, &GPIO_InitStructure);   
-
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-  	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  	//GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  	//GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  	GPIO_Init(GPIOA, &GPIO_InitStructure);  
-	
-	USART_StructInit(&USART_InitStructure);
-  	USART_InitStructure.USART_BaudRate = 57600;//波特率设置
-  	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  	USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  	USART_InitStructure.USART_Parity = USART_Parity_No;
-  	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx; 
-  	USART_Init(USART2, &USART_InitStructure);
-	
-	USART_ClockStructInit(&USART_ClockInitStruct);
-	USART_ClockInit(USART2,&USART_ClockInitStruct);
-	
-	USART_ITConfig(USART2,USART_IT_RXNE,ENABLE);
-//    USART_ITConfig(USART2, USART_IT_TXE, ENABLE);
-  	USART_Cmd(USART2, ENABLE);
-  	//USART_ClearFlag(USART3, USART_FLAG_TC);
 	
 	//----------USART3 config -----//    有用 的
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
@@ -147,7 +108,7 @@ void Bsp_UartInit(void)
   	GPIO_Init(GPIOC, &GPIO_InitStructure);  
 	
 	USART_StructInit(&USART_InitStructure);
-  	USART_InitStructure.USART_BaudRate = 115200;//波特率设置
+  	USART_InitStructure.USART_BaudRate = 57600;//波特率设置
   	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   	USART_InitStructure.USART_StopBits = USART_StopBits_1;
   	USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -158,7 +119,7 @@ void Bsp_UartInit(void)
 	USART_ClockStructInit(&USART_ClockInitStruct);
 	USART_ClockInit(USART6,&USART_ClockInitStruct);
 
-	//USART_ITConfig(USART6, USART_IT_TXE, ENABLE);
+	USART_ITConfig(USART6, USART_IT_TXE, ENABLE);
 	USART_ITConfig(USART6,USART_IT_RXNE,ENABLE);
   	USART_Cmd(USART6, ENABLE);
         
@@ -429,7 +390,7 @@ void USART6_Pack_Send(u8 * str,u16 len)
 
 	while (uin_Index < uin_Size)
 	{
-		if (uin_Index >2 && uin_Index<uin_Size-1
+	  if (uin_Index >2 && uin_Index<uin_Size-1
 			&&uch_LastChar == 0x7d)//pst_Pack->uch_Data[uin_Index-1] == 0x7d)
 		{
 
@@ -442,6 +403,7 @@ void USART6_Pack_Send(u8 * str,u16 len)
 			uch_LastChar = str[uin_Index++];
 			tmp = uch_LastChar;//pst_Pack->uch_Data[uin_Index++];
 		}
+
 		USART_SendData(USART6, tmp); 
         while(USART_GetFlagStatus(USART6, USART_FLAG_TC) == RESET); 
 	}

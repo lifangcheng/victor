@@ -62,21 +62,21 @@ void CProtocal::Comm_MakePack(SR_FRAME *p_frame)
     
     k = 0;      
     //帧头
-    p_com->uch_buf[k++] = 0x8A;
-	p_com->uch_buf[k++] = 0x8B;
+    p_com->uch_buf[k++] = 0x7D;
+	p_com->uch_buf[k++] = 0x7B;
 	//保留字节
-    p_com->uch_buf[k++] = p_frame->uch_resv[0];
-	p_com->uch_buf[k++] = p_frame->uch_resv[1];
-	p_com->uch_buf[k++] = p_frame->uch_resv[2];
-	p_com->uch_buf[k++] = p_frame->uch_resv[3];
+ ///   p_com->uch_buf[k++] = p_frame->uch_resv[0];
+//	p_com->uch_buf[k++] = p_frame->uch_resv[1];
+//	p_com->uch_buf[k++] = p_frame->uch_resv[2];
+//	p_com->uch_buf[k++] = p_frame->uch_resv[3];
 
     //命令码
-	p_com->uch_buf[k++] = p_frame->uch_cmd;
+//	p_com->uch_buf[k++] = p_frame->uch_cmd;
     //命令扩展码
-    p_com->uch_buf[k++] = p_frame->uch_excmd;
+//    p_com->uch_buf[k++] = p_frame->uch_excmd;
     //数据长度
-    EncodeUint(p_frame->uin_len,p_com->uch_buf+k);
-    k += 2;
+//    EncodeUint(p_frame->uin_len,p_com->uch_buf+k);
+//    k += 2;
     //数据区
     CopyFromAToB(p_frame->uch_data,p_com->uch_buf+k,p_frame->uin_len);
     k += p_frame->uin_len;
@@ -85,8 +85,8 @@ void CProtocal::Comm_MakePack(SR_FRAME *p_frame)
     EncodeUint(uin_Crc,p_com->uch_buf+k);
     k += 2;
     //帧尾
-    p_com->uch_buf[k++] = 0x8B;
-	p_com->uch_buf[k++] = 0x8B;
+    p_com->uch_buf[k++] = 0x7B;
+	p_com->uch_buf[k++] = 0x7B;
     
     p_com->uin_tran_bytes = k;
      
@@ -120,13 +120,13 @@ char CProtocal::Comm_DecPack(SR_FRAME *p_frame)
     uin_Crc2 = DecodeUint(p_com->uch_buf + p_com->uin_rec_bytes-4);
     if(uin_Crc1 != uin_Crc2)
     {
-        return 0;
+   //     return 0;
     }    
 
     //帧头
     //p_frame->uch_head = p_com->uch_buf[k++]; 
-	k++;
-	k++;
+	//k++;
+	//k++;
 	//保留字节
 	p_frame->uch_resv[0] = p_com->uch_buf[k++];
 	p_frame->uch_resv[1] = p_com->uch_buf[k++];//地址
@@ -200,15 +200,15 @@ void CProtocal::Comm_DealPack(void)
 	   st_rcvpack.uch_excmd == 0x77 || 
 	   st_rcvpack.uch_excmd == 0x88)
 	{
-        if(st_rcvpack.uch_resv[1] == 0x10)//地址匹配
+       // if(st_rcvpack.uch_resv[1] == 0x10)//地址匹配
         {
             Comm_Slavepack(&st_rcvpack,&st_tranpack);
         }
-        else
+      //  else
         {
-            st_com_buff.uin_rec_bytes = 0;
-            st_com_buff.uch_status = COM_IDLE;
-            return;
+      //      st_com_buff.uin_rec_bytes = 0;
+      //      st_com_buff.uch_status = COM_IDLE;
+      //      return;
         }
 	}
 	else
@@ -228,12 +228,12 @@ void CProtocal::Comm_DealPack(void)
 		//命令码拷贝
         st_tranpack.uch_cmd = st_rcvpack.uch_cmd;
         //命令扩展码交换
-		if(st_tranpack.uch_excmd != 0xDD && st_tranpack.uch_excmd != 0xCC)
-        st_tranpack.uch_excmd = 0xFF - st_rcvpack.uch_excmd;
+	//	if(st_tranpack.uch_excmd != 0xDD && st_tranpack.uch_excmd != 0xCC)
+   //     st_tranpack.uch_excmd = 0xFF - st_rcvpack.uch_excmd;
         //组帧
-        Comm_MakePack(&st_tranpack);
+       // Comm_MakePack(&st_tranpack);
         //发送
-        Comm_SendFrame(much_ComType);
+       // Comm_SendFrame(much_ComType);
     }
     //临时通信缓冲区清零
     st_rcvpack.uin_len    = 0;
@@ -281,23 +281,25 @@ BOOL CProtocal::Comm_GetFrameFromFifo(void)
 		//标志位判断		
 		if(st_Temp->uin_rec_bytes == 1)
 		{
-			if(uch_Temp != 0x8A)
+			if(uch_Temp != 0x7B)
 			{
 				st_Temp->uin_rec_bytes = 0;
 			}
 			uch_comThrowFlag = 0; 
 		}
-		else if(st_Temp->uin_rec_bytes == 2)
+#if 0	
+else if(st_Temp->uin_rec_bytes == 2)
 		{
-			if(uch_Temp != 0x8B)
+			if(uch_Temp != 0x7B)
 			{
 				st_Temp->uin_rec_bytes=0;
 			}
 			uch_comThrowFlag = 0; 
 		}
-		else if(st_Temp->uch_buf[st_Temp->uin_rec_bytes-2] == 0x8B && uch_comThrowFlag == 0) //大于2的情况
+#endif
+		else if(uch_comThrowFlag == 0) //大于2的情况
 		{
-			if(uch_Temp == 0x8B)
+			if(uch_Temp == 0x7D)
 			{
 				st_Temp->uch_status = RECIEVED;
 				uch_comThrowFlag = 0; 
@@ -309,7 +311,7 @@ BOOL CProtocal::Comm_GetFrameFromFifo(void)
 				 st_Temp->uin_rec_bytes--;  //..
 				 uch_comThrowFlag = 1;
 			}
-			else if(uch_Temp == 0x8B)//数据帧重新开始
+			else if(uch_Temp == 0x7B)//数据帧重新开始
 			{
 				st_Temp->uin_rec_bytes=0;
 				uch_comThrowFlag = 0; 
@@ -347,7 +349,7 @@ void CProtocal::Comm_PushToFifo(SR_FIFO *p)
 	while (uin_Index < uin_Size)
 	{
 		if (uin_Index >2 && uin_Index<uin_Size-1
-			&&uch_LastChar == 0x8A)//数据中有0x7d,后跟0x82
+			&&uch_LastChar == 0x7D)//数据中有0x7d,后跟0x82
 		{
 			uch_LastChar = 0x82;
 			tmp = 0x82;
@@ -378,7 +380,7 @@ void CProtocal::Comm_PushBuffToFifo(INT8U *p,INT8U len)
 	while (uin_Index < uin_Size)
 	{
 		if (uin_Index >2 && uin_Index<uin_Size-1
-			&&uch_LastChar == 0x8A)//数据中有0x7d,后跟0x82
+			&&uch_LastChar == 0x7D)//数据中有0x7d,后跟0x82
 		{
 			uch_LastChar = 0x82;
 			tmp = 0x82;
@@ -416,7 +418,7 @@ void CProtocal::Comm_SendFrame(INT8U uch_ComType)
      } 
      else if(COM_SCI6 == uch_ComType)
      {
-        USART_ITConfig(USART6,USART_IT_TXE,ENABLE);
+        //USART_ITConfig(USART6,USART_IT_TXE,ENABLE);
      } 
 }
 
@@ -448,6 +450,6 @@ SR_FIFO * CProtocal::GetFifo(INT8U uch_ComType)
 //==================================================================================
 void Comm_Protocal_Precess(void)
 {
-    m_Uart3.Comm_DealPack();
+    m_Uart6.Comm_DealPack();
 //	m_Uart6.Comm_DealPack();
 }

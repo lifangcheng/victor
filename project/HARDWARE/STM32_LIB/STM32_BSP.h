@@ -67,6 +67,8 @@ void DelayNus(u32 Nus);
 void USART1_Frame(u8 * str,u16 len);
 
 void USART3_Puts(u8 * str,u16 len);
+void USART6_Puts(u8 * str,u16 len);
+
 
 void USART3_IRQHandler(void);
 

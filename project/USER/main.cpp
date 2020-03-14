@@ -13,16 +13,50 @@ INT16U uin_buff[512];// = {2,45,456,6789,64564};
 #define FLASH_SAVE_ADDR  500
 INT8U uch_buff[15];
 
+//SR_FRAME *pt;
+
+				
+void SendPack(void)
+{
+    u16 k,i;
+    u16 uin_Crc;
+static	 INT8U buff[2120];
+
+    
+    k = 0;      
+    //帧头
+    buff[k++] = 0x7D;
+	buff[k++] = 0x7B;
+
+		for(i=0;i<64;i++)
+		{
+			buff[k++] = 0xAA;       
+		}
+		
+		for(i=0;i<512;i++)
+		{
+		    EncodeUint(0,buff+k); 
+		 //   EncodeUint(i*10,buff+k); 
+			k+=2;
+			EncodeUint(uin_buff[i],buff+k); 
+			k+=2;
+		}         
+   // k += p_frame->uin_len;
+    //Crc校验
+    uin_Crc = GetCrc16Bit(buff+2,k-2);
+    EncodeUint(uin_Crc,buff+k);
+    k += 2;
+    //帧尾
+    buff[k++] = 0x7D;
+	buff[k++] = 0x7D;
+	
+	USART6_Pack_Send(buff,k);
+	
+}
 int main(void)
 { 
     static RCC_ClocksTypeDef RCC_Clocks;
-	static INT32U data;
-	static FP32 f_Temp;
-	static INT8U flag;
-    u8 strings[15] = "hello word \n";
-	int i;
-     
-	//DelayNms(100);
+
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2
     WDI_TOGGLE();
 	//delay_init(160);    //初始化延时函数
@@ -34,22 +68,16 @@ int main(void)
 	SysClock_Init();
     InitParaFromFlash(INIT_NORMAL);
     WDI_TOGGLE();
-	//gst_SysPara.uch_Adr = 35;
-	//gst_SysPara.uch_Baud = 2;
-	
-	//SaveToFlash((INT32U)&gst_SysPara.uch_Adr);
-	//SaveToFlash((INT32U)&gst_SysPara.uch_Baud);
+
 	SetDA_Voltage(1.0);  
 	SetPWM_Duty(PWM_CHL1,70);
-//	MT25QL128_Erase_Chip();
    // LED1_ON();
     LED1_OFF();
 	LED2_OFF();
     LED3_OFF();
 	while(1)
 	{
-	 //   Comm_Protocal_Precess();
-//flag=AD4004_ReadRegister();
+	   // Comm_Protocal_Precess();
 		WDI_TOGGLE();
 #if 0	
 		if (UsbHidReceiveComplete)
@@ -61,14 +89,14 @@ int main(void)
 		  } 
 #endif		
 		
-		
 #if 1		
-		if(uin_CountSec > gst_SysPara.uin_TimeInt) 
+		if(uin_CountSec > gst_SysPara.uin_TimeInt*2) 
         {
 		//    LED2_TOGGLE();
             uin_CountSec = 0;
             S10121_ImageCapture((INT16U*)uin_buff);    
-	        SendImageData(uin_buff);
+	      //  SendImageData(uin_buff);
+			SendPack();
         }	
 #endif
 	}  
