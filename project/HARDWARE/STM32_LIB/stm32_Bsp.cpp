@@ -38,8 +38,6 @@ void BSP_Init(void)
 	
     MT25QL128_Init();
 	STM32_Tim_PWM_Init();
-	//Stm32_Can_Init();
-	//STM32_Exti_Init();
 	//S8377_init();
     //LTC2355Init();
     AD4004Init();
