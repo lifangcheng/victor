@@ -19,18 +19,18 @@ void MT25QL128_Init(void)
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);//使能GPIOA时钟
 
   /* Configure PA.4 PA.8 as Output push-pull, used as Chip select */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_4 ;                     //选中第4引脚
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 ;                     //选中第4引脚
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;                          //最大输出速度50M
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;                              //输出模式
   GPIO_Init(GPIOA, &GPIO_InitStructure);                                     //按上述设置初始化引脚
 
   /* Configure PC.8 as Output push-pull, used as Chip select */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;                                  //选中第4引脚
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_4;                                  //选中第4引脚
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;                          //最大输出速度50M
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;                              //输出模式
   GPIO_Init(GPIOC, &GPIO_InitStructure);                                     //按上述设置初始化引脚
   
-  GPIO_SetBits(GPIOA, GPIO_Pin_8);
+  GPIO_SetBits(GPIOC, GPIO_Pin_5);
 
   MT25QL128_CS=1;			    //SPI FLASH不选中
   W25QXX_TYPE=MT25QL128_ReadID();	//读取FLASH ID.

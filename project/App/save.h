@@ -63,6 +63,7 @@ typedef struct
 	INT8U uch_Adr;//????
 	INT8U uch_Baud;//???    
     INT16U uin_TimeInt;
+	INT16U uin_SamAvr;
         
 }ST_SYSPARA;
 
@@ -76,7 +77,8 @@ static const MYSAVEPARA st_Save[N_MAX_SAVE]=
 START_ADD+36,(INT32U)&gst_SysPara.uch_SerilNum[0],   KIND_INT8U,    12,    LIMIT_RANGE,       0,         'z',      'X',
 START_ADD+48, (INT32U)&gst_SysPara.uch_Adr,KIND_INT8U,    1,    LIMIT_RANGE,       0x20,          0x3f,      0x20,	
 START_ADD+49, (INT32U)&gst_SysPara.uch_Baud,KIND_INT8U,    1,    LIMIT_RANGE,       0x01,          0x05,      0x04,	
-START_ADD+49, (INT32U)&gst_SysPara.uin_TimeInt,KIND_INT16U,    2,    LIMIT_RANGE,       1,          1000,      50,	
+START_ADD+50, (INT32U)&gst_SysPara.uin_TimeInt,KIND_INT16U,    2,    LIMIT_RANGE,       1,          1000,      100,	
+START_ADD+52, (INT32U)&gst_SysPara.uin_SamAvr ,KIND_INT16U,    2,    LIMIT_RANGE,       1,          1000,      1,	
 };
 
 //========================= Variable,Object & Fuction =====================//

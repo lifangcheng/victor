@@ -1,7 +1,7 @@
 #include "stm32f4xx.h"
 #include "stm32_Bsp.h"
 #include <stdio.h>
-
+#include "Comm_FpiNew.h"
 
 #if 1
 #pragma import(__use_no_semihosting)             
@@ -427,12 +427,20 @@ void USART6_IRQHandler(void)
   if(USART_GetITStatus(USART6, USART_IT_RXNE) == SET) 
   { 
      temp = USART_ReceiveData(USART6);
+     m_FpiUart6.FifoPushRcvFifo(temp);
      USART_ClearITPendingBit(USART6, USART_IT_RXNE); 
   }   
   if(USART_GetITStatus(USART6, USART_IT_TXE) != RESET)
   {   	
-	 USART_ClearITPendingBit(USART6, USART_IT_TXE); 
-	 USART_ITConfig(USART6, USART_IT_TXE, DISABLE);
+	   if(m_FpiUart6.FifoPopTrnFifo(&temp) == 1)
+       {
+    		USART_SendData(USART6, temp);
+       }	
+       else
+       {
+    		USART_ClearITPendingBit(USART6, USART_IT_TXE); 
+    		USART_ITConfig(USART6, USART_IT_TXE, DISABLE);
+       }
   }
   return;
 }
@@ -455,13 +463,20 @@ void USART3_IRQHandler(void)
   if(USART_GetITStatus(USART3, USART_IT_RXNE) == SET) 
   { 
      temp = USART_ReceiveData(USART3);
-
+     m_FpiUart3.FifoPushRcvFifo(temp);
      USART_ClearITPendingBit(USART3, USART_IT_RXNE);
   }     
   if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET)
   {   	
-	 USART_ClearITPendingBit(USART3, USART_IT_TXE); 
-	 USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
+	 if(m_FpiUart3.FifoPopTrnFifo(&temp) == 1)
+     {
+  		USART_SendData(USART3, temp);
+     }	
+     else
+     {
+  		USART_ClearITPendingBit(USART3, USART_IT_TXE); 
+  		USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
+     }
   }
   return;
 }

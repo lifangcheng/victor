@@ -2,14 +2,14 @@
 #include "STM32_BSP.h"
 #include <string.h>
 #include <stdio.h>
-#include "Comm_Protocal.h"
+#include "Comm_FpiNew.h"
 
 #include "save.h"
 extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
 extern uint8_t UsbHidReceiveComplete ;
 extern INT16U uin_CountSec; 
   
-INT16U uin_buff[512];// = {2,45,456,6789,64564};
+INT16U uin_buff[512];
 #define FLASH_SAVE_ADDR  500
 INT8U uch_buff[15];
 
@@ -77,8 +77,8 @@ int main(void)
     LED3_OFF();
 	while(1)
 	{
-	   // Comm_Protocal_Precess();
 		WDI_TOGGLE();
+		Comm_FpiNew_Precess();
 #if 0	
 		if (UsbHidReceiveComplete)
 		{
@@ -90,13 +90,13 @@ int main(void)
 #endif		
 		
 #if 1		
-		if(uin_CountSec > gst_SysPara.uin_TimeInt*2) 
+		if(uin_CountSec > gst_SysPara.uin_TimeInt) 
         {
 		//    LED2_TOGGLE();
             uin_CountSec = 0;
             S10121_ImageCapture((INT16U*)uin_buff);    
 	      //  SendImageData(uin_buff);
-			SendPack();
+			//SendPack();
         }	
 #endif
 	}  
